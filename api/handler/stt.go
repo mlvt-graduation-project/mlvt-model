@@ -1,10 +1,11 @@
 package handler
 
 import (
+	"fmt"
 	"mlvt-api/api/model"
+	"mlvt-api/pkg/command"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
@@ -33,9 +34,12 @@ func ProcessSTT(c *gin.Context) {
 		}
 	}
 
-	cmd := exec.Command("python3.11", "../scripts/stt.py", "--input_file", inputFile, "--output_file", outputFile)
+	//cmd := exec.Command("python3.11", "../scripts/stt.py", "--input_file", inputFile, "--output_file", outputFile)
+	filename := "../scripts/stt.py"
+	cmd := command.RunCommand(command.Py3_11, filename, inputFile, outputFile)
 
 	output, err := cmd.CombinedOutput()
+	fmt.Println(err)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": string(output)})
 		return
