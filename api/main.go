@@ -9,11 +9,11 @@ import (
 func main() {
 	router := gin.Default()
 
-	router.POST("/process-stt", handler.ProcessSTT)
-	// router.POST("/process-ttt", handler.ProcessTTT)
-	// router.POST("/process-tts", handler.ProcessTTS)
-	// router.POST("/process-way2lip", handler.ProcessWay2Lip)
+	// Register routes.
+	router.POST("/stt", handler.STTHandler)
+	router.POST("/tts", handler.TTSHandler)
+	router.POST("/ttt", handler.TTTHandler)
 
-	// run server on port 8000
-	router.Run(":8000")
+	// Start the server.
+	router.Run("0.0.0.0:8000") // Adjust the port as needed.
 }

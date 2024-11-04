@@ -1,0 +1,54 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+vendor/
+log/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# Ignore all files in data/input and data/output subdirectories, but keep the folder structure
+data/input/*/*
+!data/input/ls/
+!data/input/stt/
+!data/input/tts/
+!data/input/ttt/
+
+data/output/*/*
+!data/output/ls/
+!data/output/stt/
+!data/output/tts/
+!data/output/ttt/
+
+# Ignore all files in api/data/input and api/data/output subdirectories, but keep the folder structure
+api/data/input/*/*
+!api/data/input/stt/
+
+api/data/output/*/*
+!api/data/output/stt/
+
+# Ignore files in scripts subdirectories, but keep folder structure
+scripts/*/*
+!scripts/ls/
+!scripts/stt/
+!scripts/tts/
+!scripts/ttt/

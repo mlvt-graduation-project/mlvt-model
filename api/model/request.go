@@ -1,11 +1,27 @@
 package model
 
-type ModelRequest struct {
-	InputDir  string `json:"input_dir" binding:"required"`
-	OutputDir string `json:"output_dir" binding:"required"`
+// STTRequest represents the request payload for STT processing.
+type STTRequest struct {
+	InputFileName  string `json:"input_file_name" binding:"required"`
+	InputLink      string `json:"input_link" binding:"required"`
+	OutputFileName string `json:"output_file_name" binding:"required"`
+	OutputLink     string `json:"output_link" binding:"required"`
 }
 
-type STTRequest struct {
-	InputFile  string `json:"input_file" binding:"required"`
-	OutputFile string `json:"output_file" binding:"required"`
+// TTSRequest represents the request payload for TTS processing.
+type TTSRequest struct {
+	InputFileName  string `json:"input_file_name" binding:"required"`
+	InputLink      string `json:"input_link" binding:"required"`
+	OutputFileName string `json:"output_file_name" binding:"required"`
+	OutputLink     string `json:"output_link" binding:"required"`
+}
+
+// TTTRequest represents the request payload for TTT processing.
+type TTTRequest struct {
+	InputFileName  string `json:"input_file_name" binding:"required"`
+	InputLink      string `json:"input_link" binding:"required"`
+	OutputFileName string `json:"output_file_name" binding:"required"`
+	OutputLink     string `json:"output_link" binding:"required"`
+	SourceLang     string `json:"source_language" binding:"required"`
+	TargetLang     string `json:"target_language" binding:"required"`
 }
