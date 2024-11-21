@@ -16,12 +16,10 @@ func ExecuteCommand(pythonVersion python.PythonVersion, scriptPath string, args 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	// Prepare the command arguments.
 	cmdArgs := append([]string{scriptPath}, args...)
 
 	fmt.Printf("- - -cmd: %v \n", cmdArgs)
 
-	// Create the command.
 	cmd := exec.CommandContext(ctx, pythonExec, cmdArgs...)
 
 	fmt.Printf("- - - cmd: %v \n", cmd)
@@ -36,8 +34,7 @@ func ExecuteCommand(pythonVersion python.PythonVersion, scriptPath string, args 
 }
 
 // RunSTT executes the stt.py script.
-func RunSTT(pythonVersion python.PythonVersion, inputFile, outputFile string) error {
-	scriptPath := "/home/ec2-user/mlvt-api/scripts/stt/stt.py"
+func RunSTT(pythonVersion python.PythonVersion, scriptPath, inputFile, outputFile string) error {
 	fmt.Printf("- - debug: %v; %v \n", inputFile, outputFile)
 	args := []string{inputFile, outputFile}
 	timeout := 5 * time.Minute // Adjust as needed.
@@ -46,8 +43,7 @@ func RunSTT(pythonVersion python.PythonVersion, inputFile, outputFile string) er
 }
 
 // RunTTS executes the tts.py script.
-func RunTTS(pythonVersion python.PythonVersion, inputFile, outputFile string) error {
-	scriptPath := "./scripts/tts/tts.py"
+func RunTTS(pythonVersion python.PythonVersion, scriptPath, inputFile, outputFile string) error {
 	args := []string{inputFile, outputFile}
 	timeout := 5 * time.Minute // Adjust as needed.
 
@@ -55,8 +51,7 @@ func RunTTS(pythonVersion python.PythonVersion, inputFile, outputFile string) er
 }
 
 // RunTTT executes the ttt.py script.
-func RunTTT(pythonVersion python.PythonVersion, inputFile, outputFile, sourceLang, targetLang string) error {
-	scriptPath := "./scripts/ttt/ttt.py"
+func RunTTT(pythonVersion python.PythonVersion, scriptPath, inputFile, outputFile, sourceLang, targetLang string) error {
 	args := []string{inputFile, outputFile, sourceLang, targetLang}
 	timeout := 5 * time.Minute // Adjust as needed.
 
