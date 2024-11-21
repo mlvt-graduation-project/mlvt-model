@@ -12,22 +12,25 @@ type Worker struct {
 	store       *model.JobStatusStore
 	callbackURL string
 	processor   *Processor
+	wg          *WorkerGroup
 }
 
 // NewWorker initializes a new Worker.
-func NewWorker(id int, jobQueue <-chan *model.Job, store *model.JobStatusStore, callbackURL string) *Worker {
+func NewWorker(id int, jobQueue <-chan *model.Job, store *model.JobStatusStore, callbackURL string, wg *WorkerGroup) *Worker {
 	return &Worker{
 		id:          id,
 		jobQueue:    jobQueue,
 		store:       store,
 		callbackURL: callbackURL,
 		processor:   NewProcessor(),
+		wg:          wg,
 	}
 }
 
 // Start begins the worker's job processing loop.
 func (w *Worker) Start() {
 	go func() {
+		defer w.wg.Done() // Signal completion when the goroutine exits
 		log.Printf("Worker %d started\n", w.id)
 		for job := range w.jobQueue {
 			log.Printf("Worker %d processing job ID: %s\n", w.id, job.ID)

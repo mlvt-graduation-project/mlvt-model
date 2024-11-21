@@ -17,11 +17,16 @@ func NewWorkerGroup() *WorkerGroup {
 }
 
 // AddWorker adds a worker's WaitGroup to the group.
-func (wg *WorkerGroup) AddWorker(worker *Worker) {
+func (wg *WorkerGroup) AddWorker() {
 	wg.wg.Add(1)
 }
 
-// WorkerGroupWait waits for all workers in the group to finish.
+// Done decrements the WaitGroup counter.
+func (wg *WorkerGroup) Done() {
+	wg.wg.Done()
+}
+
+// Wait waits for all workers in the group to finish.
 func (wg *WorkerGroup) Wait() {
 	wg.wg.Wait()
 }
