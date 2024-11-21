@@ -26,8 +26,8 @@ func (jq *JobQueue) Enqueue(job *model.Job) {
 // StartWorkers starts the specified number of worker goroutines.
 func (jq *JobQueue) StartWorkers(numWorkers int, store *model.JobStatusStore, callbackURL string) {
 	for i := 0; i < numWorkers; i++ {
-		worker := NewWorker(i, jq.queue, store, callbackURL)
-		jq.wg.AddWorker(worker)
+		jq.wg.AddWorker()
+		worker := NewWorker(i, jq.queue, store, callbackURL, jq.wg)
 		worker.Start()
 	}
 }
