@@ -1,43 +1,47 @@
+// handler/tts_handler.go
 package handler
 
 import (
-	"mlvt-api/api/model"
-	"mlvt-api/internal/command"
-	"mlvt-api/internal/python"
-	utils "mlvt-api/pkg"
+	"log"
 	"net/http"
-	"path/filepath"
+
+	"mlvt-api/api/model"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-func TTSHandler(c *gin.Context) {
+func (h *Handler) TTSHandler(c *gin.Context) {
 	var req model.TTSRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("Failed to bind JSON: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	inputFileName := filepath.Base(filepath.Clean(req.InputFileName))
-	outputFileName := filepath.Base(filepath.Clean(req.OutputFileName))
+	log.Printf("Incoming TTS request: %+v\n", req)
 
-	inputFilePath := filepath.Join("data", "input", "tts", inputFileName)
-	outputFilePath := filepath.Join("data", "output", "tts", outputFileName)
+	// Generate a unique job ID
+	jobID := uuid.New().String()
 
-	if err := utils.DownloadFile(req.InputLink, inputFilePath); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to download input file"})
-		return
+	// Create a new job
+	job := &model.Job{
+		ID:      jobID,
+		Type:    "tts",
+		Request: &req,
+		Status:  "received",
 	}
 
-	if err := command.RunTTS(python.Py3_11, inputFilePath, outputFilePath); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute TTS script", "details": err.Error()})
-		return
-	}
+	// Add job to the status store
+	h.JobStore.AddJob(job)
 
-	if err := utils.UploadFile(outputFilePath, req.OutputLink); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload output file"})
-		return
-	}
+	// Enqueue the job for background processing
+	h.JobQueue.Enqueue(job)
 
-	c.JSON(http.StatusOK, gin.H{"message": "TTS processing completed successfully"})
+	// Respond immediately with the job ID and status
+	c.JSON(http.StatusAccepted, gin.H{
+		"message": "TTS processing request received",
+		"job_id":  jobID,
+		"status":  job.Status,
+	})
 }

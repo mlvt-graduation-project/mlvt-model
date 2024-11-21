@@ -1,43 +1,47 @@
 package handler
 
 import (
-	"mlvt-api/api/model"
-	"mlvt-api/internal/command"
-	"mlvt-api/internal/python"
-	utils "mlvt-api/pkg"
+	"log"
 	"net/http"
-	"path/filepath"
+
+	"mlvt-api/api/model"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-func TTTHandler(c *gin.Context) {
+// TTTHandler handles the Text-to-Text (TTT) processing requests asynchronously.
+func (h *Handler) TTTHandler(c *gin.Context) {
 	var req model.TTTRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("Failed to bind JSON: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	inputFileName := filepath.Base(filepath.Clean(req.InputFileName))
-	outputFileName := filepath.Base(filepath.Clean(req.OutputFileName))
+	log.Printf("Incoming TTT request: %+v\n", req)
 
-	inputFilePath := filepath.Join("data", "input", "ttt", inputFileName)
-	outputFilePath := filepath.Join("data", "output", "ttt", outputFileName)
+	// Generate a unique job ID
+	jobID := uuid.New().String()
 
-	if err := utils.DownloadFile(req.InputLink, inputFilePath); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to download input file"})
-		return
+	// Create a new job
+	job := &model.Job{
+		ID:      jobID,
+		Type:    "ttt",
+		Request: &req,
+		Status:  "received",
 	}
 
-	if err := command.RunTTT(python.Py3_11, inputFilePath, outputFilePath, req.SourceLang, req.TargetLang); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to execute TTT script", "details": err.Error()})
-		return
-	}
+	// Add job to the status store
+	h.JobStore.AddJob(job)
 
-	if err := utils.UploadFile(outputFilePath, req.OutputLink); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload output file"})
-		return
-	}
+	// Enqueue the job for background processing
+	h.JobQueue.Enqueue(job)
 
-	c.JSON(http.StatusOK, gin.H{"message": "TTT processing completed successfully"})
+	// Respond immediately with the job ID and status
+	c.JSON(http.StatusAccepted, gin.H{
+		"message": "TTT processing request received",
+		"job_id":  jobID,
+		"status":  job.Status,
+	})
 }
