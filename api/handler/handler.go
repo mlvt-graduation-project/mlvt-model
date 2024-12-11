@@ -7,16 +7,14 @@ import (
 
 // Handler encapsulates the dependencies for handlers.
 type Handler struct {
-	JobStore    *model.JobStatusStore
-	JobQueue    *queue.JobQueue
-	CallbackURL string
+	JobStore *model.JobStatusStore
+	JobQueue *queue.JobQueue
 }
 
 // NewHandler initializes a new Handler with dependencies.
-func NewHandler(store *model.JobStatusStore, queue *queue.JobQueue, callbackURL string) *Handler {
+func NewHandler(store *model.JobStatusStore, queue *queue.JobQueue) *Handler {
 	return &Handler{
-		JobStore:    store,
-		JobQueue:    queue,
-		CallbackURL: callbackURL,
+		JobStore: store,
+		JobQueue: queue,
 	}
 }

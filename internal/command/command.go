@@ -57,3 +57,12 @@ func RunTTT(pythonVersion python.PythonVersion, scriptPath, inputFile, outputFil
 
 	return ExecuteCommand(pythonVersion, scriptPath, args, timeout)
 }
+
+// RunLS executes the ls.py (lip-sync) script.
+func RunLS(pythonVersion python.PythonVersion, scriptPath, inputVideoFile, inputAudioFile, outputFile string) error {
+	fmt.Printf("- - debug (LS): %v; %v; %v\n", inputVideoFile, inputAudioFile, outputFile)
+	args := []string{inputVideoFile, inputAudioFile, outputFile}
+	timeout := 5 * time.Minute // Adjust as needed.
+
+	return ExecuteCommand(pythonVersion, scriptPath, args, timeout)
+}
