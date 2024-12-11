@@ -18,8 +18,9 @@ func NewJobQueue(bufferSize int) *JobQueue {
 	}
 }
 
-// Enqueue adds a job to the queue.
+// Enqueue adds a job to the queue and initializes the Done channel.
 func (jq *JobQueue) Enqueue(job *model.Job) {
+	job.Done = make(chan struct{}) // Initialize the Done channel
 	jq.queue <- job
 }
 

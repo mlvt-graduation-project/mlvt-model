@@ -1,0 +1,11 @@
+# Makefile cho việc chuyển đổi văn bản thành âm thanh
+
+# Định nghĩa biến
+PYTHON=python3
+SCRIPT=ls.py
+
+# Định nghĩa target
+.PHONY: run
+
+run:
+	$(PYTHON) $(SCRIPT) $(INPUT_VIDEO) $(INPUT_AUDIO) $(OUTPUT_FILE)

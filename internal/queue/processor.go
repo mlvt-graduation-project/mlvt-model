@@ -41,6 +41,12 @@ func (p *Processor) Process(job *model.Job) error {
 			return model.ErrInvalidRequestType
 		}
 		return p.processSTT(job, req)
+	case "ls":
+		req, ok := job.Request.(*model.LSRequest)
+		if !ok {
+			return model.ErrInvalidRequestType
+		}
+		return p.processLS(job, req)
 	default:
 		return model.ErrUnknownJobType
 	}
@@ -94,6 +100,9 @@ func (p *Processor) processTTT(job *model.Job, req *model.TTTRequest) error {
 		return fmt.Errorf("failed to upload output file: %v", err)
 	}
 
+	// Optionally, set the Result field
+	job.Result = "TTT processing completed successfully."
+
 	return nil
 }
 
@@ -145,6 +154,9 @@ func (p *Processor) processTTS(job *model.Job, req *model.TTSRequest) error {
 		return fmt.Errorf("failed to upload output file: %v", err)
 	}
 
+	// Optionally, set the Result field
+	job.Result = "TTS processing completed successfully."
+
 	return nil
 }
 
@@ -195,6 +207,68 @@ func (p *Processor) processSTT(job *model.Job, req *model.STTRequest) error {
 	if err := utils.UploadFile(originalOutputPath, req.OutputLink); err != nil {
 		return fmt.Errorf("failed to upload output file: %v", err)
 	}
+
+	// Optionally, set the Result field
+	job.Result = "STT processing completed successfully."
+
+	return nil
+}
+
+func (p *Processor) processLS(job *model.Job, req *model.LSRequest) error {
+	// Define directories
+	inputDir := "data/input/ls"
+	outputDir := "data/output/ls"
+
+	// Ensure directories exist
+	if err := os.MkdirAll(inputDir, os.ModePerm); err != nil {
+		return fmt.Errorf("failed to create input directory: %v", err)
+	}
+	if err := os.MkdirAll(outputDir, os.ModePerm); err != nil {
+		return fmt.Errorf("failed to create output directory: %v", err)
+	}
+
+	// Define full paths
+	originalVideoInputPath := filepath.Join(inputDir, req.InputVideoFileName)
+	originalAudioInputPath := filepath.Join(inputDir, req.InputAudioFileName)
+	outputFilePath := filepath.Join(outputDir, req.OutputVideoFileName)
+
+	// Step 1: Download the input files
+	log.Printf("Job ID %s: Downloading video file from %s to %s", job.ID, req.InputVideoLink, originalVideoInputPath)
+	if err := utils.DownloadFile(req.InputVideoLink, originalVideoInputPath); err != nil {
+		return fmt.Errorf("failed to download video input file: %v", err)
+	}
+
+	log.Printf("Job ID %s: Downloading audio file from %s to %s", job.ID, req.InputAudioLink, originalAudioInputPath)
+	if err := utils.DownloadFile(req.InputAudioLink, originalAudioInputPath); err != nil {
+		return fmt.Errorf("failed to download audio input file: %v", err)
+	}
+
+	// Step 2: Execute the LS script
+	// For now, we assume a command like: command.RunLS(python.Py3, modelPath, inputVideo, inputAudio, outputFile)
+	// The modelPath may not be used if LS doesn't require it, you can pass an empty string or handle accordingly.
+	log.Printf("Job ID %s: Executing LS script for %s and %s", job.ID, req.InputVideoFileName, req.InputAudioFileName)
+	// If the LS script doesn't use model, you can omit or handle model related parameters.
+	if err := command.RunLS(python.Py3, "", req.InputVideoFileName, req.InputAudioFileName, req.OutputVideoFileName); err != nil {
+		return fmt.Errorf("failed to execute LS script: %v", err)
+	}
+
+	// Step 3: Rename the output file if necessary (depending on how the script outputs)
+	originalOutputPath := filepath.Join(outputDir, req.OutputVideoFileName)
+	if originalOutputPath != outputFilePath {
+		log.Printf("Job ID %s: Renaming output file from %s to %s", job.ID, outputFilePath, originalOutputPath)
+		if err := os.Rename(outputFilePath, originalOutputPath); err != nil {
+			return fmt.Errorf("failed to rename output file: %v", err)
+		}
+	}
+
+	// Step 4: Upload the output file
+	log.Printf("Job ID %s: Uploading output file from %s to %s", job.ID, originalOutputPath, req.OutputVideoLink)
+	if err := utils.UploadFile(originalOutputPath, req.OutputVideoLink); err != nil {
+		return fmt.Errorf("failed to upload output file: %v", err)
+	}
+
+	// Optionally, set the Result field
+	job.Result = "LS processing completed successfully."
 
 	return nil
 }

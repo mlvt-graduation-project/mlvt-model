@@ -11,9 +11,10 @@ import (
 
 // CallbackPayload represents the payload sent to the callback API.
 type CallbackPayload struct {
-	JobID  string `json:"job_id"`
-	Status string `json:"status"`
-	Error  string `json:"error,omitempty"`
+	JobID  string      `json:"job_id"`
+	Status string      `json:"status"`
+	Error  string      `json:"error,omitempty"`
+	Result interface{} `json:"result,omitempty"` // Optional: include result
 }
 
 // CallCallbackAPI sends the job status to the callback URL.
@@ -22,6 +23,7 @@ func (p *Processor) CallCallbackAPI(callbackURL string, job *model.Job) error {
 		JobID:  job.ID,
 		Status: job.Status,
 		Error:  job.Error,
+		Result: job.Result, // Include the result if available
 	}
 
 	jsonData, err := json.Marshal(payload)

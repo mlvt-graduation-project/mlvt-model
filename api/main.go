@@ -19,18 +19,12 @@ func main() {
 	// Initialize JobQueue with a buffer size of 100
 	jobQueue := queue.NewJobQueue(100)
 
-	// Set the callback URL (replace with your actual callback API URL)
-	// callbackURL := os.Getenv("CALLBACK_URL")
-	// if callbackURL == "" {
-	// 	log.Fatal("CALLBACK_URL environment variable not set")
-	// }
-	callbackURL := "temp"
-
 	// Start background workers (e.g., 5 workers)
-	jobQueue.StartWorkers(5, jobStore, callbackURL)
+	// Updated StartWorkers signature if CallbackURL is removed
+	jobQueue.StartWorkers(5, jobStore, "") // Passing empty string or modify StartWorkers to remove the parameter
 
-	// Initialize Handler with dependencies
-	h := handler.NewHandler(jobStore, jobQueue, callbackURL)
+	// Initialize Handler with dependencies (no CallbackURL)
+	h := handler.NewHandler(jobStore, jobQueue)
 
 	router := gin.Default()
 
@@ -38,6 +32,7 @@ func main() {
 	router.POST("/stt", h.STTHandler)
 	router.POST("/tts", h.TTSHandler)
 	router.POST("/ttt", h.TTTHandler)
+	router.POST("/ls", h.LSHandler)
 	router.GET("/status/:job_id", h.StatusHandler)
 
 	// Start the server in a goroutine
@@ -63,5 +58,4 @@ func main() {
 	jobQueue.Wait()
 
 	log.Println("Server gracefully stopped")
-
 }

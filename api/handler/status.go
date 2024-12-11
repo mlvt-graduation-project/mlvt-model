@@ -17,10 +17,17 @@ func (h *Handler) StatusHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	response := gin.H{
 		"job_id": job.ID,
 		"type":   job.Type,
 		"status": job.Status,
 		"error":  job.Error,
-	})
+	}
+
+	// Optionally include the result if available
+	if job.Result != nil {
+		response["result"] = job.Result
+	}
+
+	c.JSON(http.StatusOK, response)
 }
