@@ -1,18 +1,17 @@
-# Makefile mẹ
+# Variables
+CMD_DIR := api/
+APP_NAME := mlvt
 
-.PHONY: tts ttt tts ls
+# Default target
+all: build
 
-# Định nghĩa biến
-PYTHON=python3
+# Run the application
+run:
+	go run api/main.go
 
-tts:
-	cd ./scripts/tts && $(PYTHON) tts.py $(INPUT_FILE) $(OUTPUT_FILE)
-
-ttt:
-	cd ./scripts/ttt && $(PYTHON) ttt.py $(INPUT_FILE) $(OUTPUT_FILE) $(SOURCE_LANGUAGE) $(TARGET_LANGUAGE)
-
-stt:
-	cd ./scripts/stt && $(PYTHON) stt.py $(INPUT_FILE) $(OUTPUT_FILE)
-
-# ls:
-# 	cd ./scripts/ls && $(PYTHON) ls.py $(INPUT_FILE) $(OUTPUT_FILE) $(SOURCE_LANGUAGE) $(TARGET_LANGUAGE)
+# Help
+help:
+	@echo "Makefile for $(APP_NAME)"
+	@echo
+	@echo "Usage:"
+	@echo "  make run         Run the application"

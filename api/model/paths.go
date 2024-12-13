@@ -20,7 +20,7 @@ var (
 	}
 
 	TTSModelPaths = map[ModelEntity]string{
-		ModelTTS_LightSpeed: filepath.Join(BaseScriptsDir, "tts", "tts.py"),
+		ModelTTS_LightSpeed: filepath.Join(BaseScriptsDir, "tts", "light-speed", "tts.py"),
 		ModelTTS_YourTTS:    filepath.Join(BaseScriptsDir, "tts", "your_tts.py"),
 		ModelTTS_XTTS:       filepath.Join(BaseScriptsDir, "tts", "xtts.py"),
 	}
