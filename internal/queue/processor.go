@@ -55,8 +55,8 @@ func (p *Processor) Process(job *model.Job) error {
 // processTTT processes a Text-to-Text (TTT) job.
 func (p *Processor) processTTT(job *model.Job, req *model.TTTRequest) error {
 	// Define directories
-	inputDir := "data/input/ttt"
-	outputDir := "data/output/ttt"
+	inputDir := filepath.Join("data", "input", "ttt")
+	outputDir := filepath.Join("data", "output", "ttt")
 
 	// Ensure directories exist
 	if err := os.MkdirAll(inputDir, os.ModePerm); err != nil {
@@ -109,8 +109,8 @@ func (p *Processor) processTTT(job *model.Job, req *model.TTTRequest) error {
 // processTTS processes a Text-to-Speech (TTS) job.
 func (p *Processor) processTTS(job *model.Job, req *model.TTSRequest) error {
 	// Define directories
-	inputDir := "data/input/tts"
-	outputDir := "data/output/tts"
+	inputDir := filepath.Join("data", "input", "tts")
+	outputDir := filepath.Join("data", "output", "tts")
 
 	// Ensure directories exist
 	if err := os.MkdirAll(inputDir, os.ModePerm); err != nil {
@@ -163,8 +163,8 @@ func (p *Processor) processTTS(job *model.Job, req *model.TTSRequest) error {
 // processSTT processes a Speech-to-Text (STT) job.
 func (p *Processor) processSTT(job *model.Job, req *model.STTRequest) error {
 	// Define directories
-	inputDir := "data/input/stt"
-	outputDir := "data/output/stt"
+	inputDir := filepath.Join("data", "input", "stt")
+	outputDir := filepath.Join("data", "output", "stt")
 
 	// Ensure directories exist
 	if err := os.MkdirAll(inputDir, os.ModePerm); err != nil {
@@ -216,8 +216,8 @@ func (p *Processor) processSTT(job *model.Job, req *model.STTRequest) error {
 
 func (p *Processor) processLS(job *model.Job, req *model.LSRequest) error {
 	// Define directories
-	inputDir := "data/input/ls"
-	outputDir := "data/output/ls"
+	inputDir := filepath.Join("data", "input", "ls")
+	outputDir := filepath.Join("data", "output", "ls")
 
 	// Ensure directories exist
 	if err := os.MkdirAll(inputDir, os.ModePerm); err != nil {
