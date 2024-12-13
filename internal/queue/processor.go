@@ -244,11 +244,12 @@ func (p *Processor) processLS(job *model.Job, req *model.LSRequest) error {
 	}
 
 	// Step 2: Execute the LS script
-	// For now, we assume a command like: command.RunLS(python.Py3, modelPath, inputVideo, inputAudio, outputFile)
-	// The modelPath may not be used if LS doesn't require it, you can pass an empty string or handle accordingly.
 	log.Printf("Job ID %s: Executing LS script for %s and %s", job.ID, req.InputVideoFileName, req.InputAudioFileName)
-	// If the LS script doesn't use model, you can omit or handle model related parameters.
-	if err := command.RunLS(python.Py3, "", req.InputVideoFileName, req.InputAudioFileName, req.OutputVideoFileName); err != nil {
+	modelPath, err := req.GetModelPath()
+	if err != nil {
+		return fmt.Errorf("failed to get model path: %v", err)
+	}
+	if err := command.RunLS(python.Py3, modelPath, req.InputVideoFileName, req.InputAudioFileName, req.OutputVideoFileName); err != nil {
 		return fmt.Errorf("failed to execute LS script: %v", err)
 	}
 

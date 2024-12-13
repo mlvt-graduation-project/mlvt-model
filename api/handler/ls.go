@@ -60,7 +60,7 @@ func (h *Handler) LSHandler(c *gin.Context) {
 				"error":   job.Error,
 			})
 		}
-	case <-time.After(5 * time.Minute):
+	case <-time.After(15 * time.Minute):
 		// Timeout after 5 minutes
 		c.JSON(http.StatusGatewayTimeout, gin.H{
 			"message": "LS processing timed out",

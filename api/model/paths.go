@@ -24,6 +24,10 @@ var (
 		ModelTTS_YourTTS:    filepath.Join(BaseScriptsDir, "tts", "your_tts.py"),
 		ModelTTS_XTTS:       filepath.Join(BaseScriptsDir, "tts", "xtts.py"),
 	}
+
+	LSModelPaths = map[ModelEntity]string{
+		ModelLS_Way2Lips: filepath.Join(BaseScriptsDir, "LS", "ls.py"),
+	}
 )
 
 type ModelPathGetter interface {
@@ -62,6 +66,18 @@ func (r *TTTRequest) GetModelPath() (string, error) {
 	if !exists {
 		// Return default model path if model not found
 		path, exists = TTTModelPaths[ModelTTT_Gemini]
+		if !exists {
+			return "", fmt.Errorf("default TTT model path not defined")
+		}
+	}
+	return path, nil
+}
+
+func (r *LSRequest) GetModelPath() (string, error) {
+	path, exists := LSModelPaths[r.Model]
+	if !exists {
+		// Return default model path if model not found
+		path, exists = LSModelPaths[ModelLS_Way2Lips]
 		if !exists {
 			return "", fmt.Errorf("default TTT model path not defined")
 		}
