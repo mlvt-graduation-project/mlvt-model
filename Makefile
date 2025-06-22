@@ -12,6 +12,13 @@ run:
 build:
 	go build -o mlvt $(CMD_DIR)/main.go
 
+deploy:
+	@echo "🚀 Building project..."
+	go build -o mlvt $(CMD_DIR)/main.go
+	@echo "🔄 Restarting mlvt service..."
+	sudo systemctl restart mlvt
+	@echo "✅ Done."
+
 # Help
 help:
 	@echo "Makefile for $(APP_NAME)"
