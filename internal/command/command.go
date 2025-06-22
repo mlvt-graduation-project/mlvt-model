@@ -62,7 +62,7 @@ func RunTTT(pythonVersion python.PythonVersion, scriptPath, inputFile, outputFil
 func RunLS(pythonVersion python.PythonVersion, scriptPath, inputVideoFile, inputAudioFile, outputFile string) error {
 	fmt.Printf("- - debug (LS): %v; %v; %v\n", inputVideoFile, inputAudioFile, outputFile)
 	args := []string{inputVideoFile, inputAudioFile, outputFile}
-	timeout := 15 * time.Minute // Adjust as needed.
+	timeout := 25 * time.Minute // Adjust as needed.
 
 	return ExecuteCommand(pythonVersion, scriptPath, args, timeout)
 }

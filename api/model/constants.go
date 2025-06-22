@@ -18,5 +18,6 @@ const (
 	ModelVC_FreeVC ModelEntity = "free-vc"
 
 	// Lipsync models
-	ModelLS_Way2Lips ModelEntity = "way2lips"
+	ModelLS_LatentSync ModelEntity = "latentsync"
+	ModelLS_IP_Lipsync ModelEntity = "ip-lap"
 )

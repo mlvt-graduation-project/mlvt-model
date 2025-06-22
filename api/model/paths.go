@@ -26,7 +26,8 @@ var (
 	}
 
 	LSModelPaths = map[ModelEntity]string{
-		ModelLS_Way2Lips: filepath.Join(BaseScriptsDir, "ls", "LatentSync", "ls.py"),
+		ModelLS_LatentSync: filepath.Join(BaseScriptsDir, "ls", "LatentSync", "ls.py"),
+		ModelLS_IP_Lipsync: filepath.Join(BaseScriptsDir, "ls", "IP_LAP", "ls.py"),
 	}
 )
 
@@ -77,7 +78,7 @@ func (r *LSRequest) GetModelPath() (string, error) {
 	path, exists := LSModelPaths[r.Model]
 	if !exists {
 		// Return default model path if model not found
-		path, exists = LSModelPaths[ModelLS_Way2Lips]
+		path, exists = LSModelPaths[ModelLS_IP_Lipsync]
 		if !exists {
 			return "", fmt.Errorf("default TTT model path not defined")
 		}
