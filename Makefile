@@ -9,6 +9,9 @@ all: build
 run:
 	go run api/main.go
 
+build:
+	go build -o mlvt $(CMD_DIR)/main.go
+
 # Help
 help:
 	@echo "Makefile for $(APP_NAME)"

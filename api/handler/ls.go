@@ -23,6 +23,10 @@ func (h *Handler) LSHandler(c *gin.Context) {
 
 	// Generate a unique job ID
 	jobID := uuid.New().String()
+	startTime := time.Now()
+
+	// Notify request received
+	h.notifyRequest(c, "LS", jobID)
 
 	// Create a new job
 	job := &model.Job{
@@ -43,8 +47,10 @@ func (h *Handler) LSHandler(c *gin.Context) {
 	// Wait for the job to be processed with a timeout
 	select {
 	case <-job.Done:
+		processingTime := time.Since(startTime)
 		// Job completed
 		if job.Status == "succeeded" {
+			h.notifySuccess("LS", job.ID, processingTime)
 			c.JSON(http.StatusOK, gin.H{
 				"message": "LS processing completed",
 				"job_id":  job.ID,
@@ -53,6 +59,11 @@ func (h *Handler) LSHandler(c *gin.Context) {
 			})
 		} else {
 			// Job failed
+			errorMsg := "Unknown error"
+			if job.Error != "" {
+				errorMsg = job.Error
+			}
+			h.notifyFailure("LS", job.ID, errorMsg, processingTime)
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "LS processing failed",
 				"job_id":  job.ID,
@@ -61,7 +72,8 @@ func (h *Handler) LSHandler(c *gin.Context) {
 			})
 		}
 	case <-time.After(15 * time.Minute):
-		// Timeout after 5 minutes
+		// Timeout after 15 minutes
+		h.notifyTimeout("LS", job.ID)
 		c.JSON(http.StatusGatewayTimeout, gin.H{
 			"message": "LS processing timed out",
 			"job_id":  job.ID,

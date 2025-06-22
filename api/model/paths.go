@@ -26,7 +26,7 @@ var (
 	}
 
 	LSModelPaths = map[ModelEntity]string{
-		ModelLS_Way2Lips: filepath.Join(BaseScriptsDir, "LS", "ls.py"),
+		ModelLS_Way2Lips: filepath.Join(BaseScriptsDir, "ls", "LatentSync", "ls.py"),
 	}
 )
 

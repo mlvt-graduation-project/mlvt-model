@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.env
+
+mlvt
+
 # Distribution / packaging
 build/
 develop-eggs/
@@ -25,6 +29,9 @@ log/
 venv/
 ENV/
 env/
+
+# Environment variables
+.env
 
 # Ignore all files in data/input and data/output subdirectories, but keep the folder structure
 data/input/*/*

@@ -5,14 +5,20 @@ import (
 	"mlvt-api/api/handler"
 	"mlvt-api/api/model"
 	"mlvt-api/internal/queue"
+	"mlvt-api/notify"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Warning: Error loading .env file: %v", err)
+	}
 	// Initialize JobStatusStore
 	jobStore := model.NewJobStatusStore()
 
@@ -35,6 +41,11 @@ func main() {
 	router.POST("/ls", h.LSHandler)
 	router.GET("/status/:job_id", h.StatusHandler)
 
+	// Send startup notification
+	if err := notify.SendTelegram("🚀 MLVT API Server Started\nListening on port 8000"); err != nil {
+		log.Printf("Failed to send startup notification: %v", err)
+	}
+
 	// Start the server in a goroutine
 	go func() {
 		if err := router.Run("0.0.0.0:8000"); err != nil {
@@ -50,6 +61,11 @@ func main() {
 	<-quit
 
 	log.Println("Shutting down server...")
+
+	// Send shutdown notification
+	if err := notify.SendTelegram("🛑 MLVT API Server Shutting Down"); err != nil {
+		log.Printf("Failed to send shutdown notification: %v", err)
+	}
 
 	// Close the job queue channel to stop workers gracefully
 	jobQueue.Close()
